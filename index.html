@@ -1491,23 +1491,23 @@
                 <form method="post" data-aos="fade">
                   <div class="form-group row">
                     <div class="col-md-6 mb-3 mb-lg-0">
-                      <input type="text" class="form-control" placeholder="First name">
+                      <input id="fname" name="fname" type="text" class="form-control" placeholder="First name">
                     </div>
                     <div class="col-md-6">
-                      <input type="text" class="form-control" placeholder="Last name">
+                      <input id="lname" name="lname" type="text" class="form-control" placeholder="Last name">
                     </div>
                   </div>
 
                   <div class="form-group row">
                     <div class="col-md-12">
-                      <input type="email" class="form-control" placeholder="Email">
+                      <input id="email" name="email" type="email" class="form-control" placeholder="Email">
                     </div>
                   </div>
 
                   <div class="form-group row">
                     <div class="col-md-12">
                       <!--<input type="text" class="form-control" placeholder="Subject">-->
-                      <select id="subject-select" class="form-control" onchange="show()">
+                      <select id="subject-select" name="subject-select" class="form-control" onchange="show()">
                         <option value="">Subject</option>
                       </select>
                     </div>
@@ -1515,7 +1515,7 @@
 
                   <div class="form-group row">
                     <div class="col-md-12">
-                      <textarea class="form-control" id="" cols="30" rows="10"
+                      <textarea id="message" name="message" class="form-control" id="" cols="30" rows="10"
                         placeholder="Write your message here."></textarea>
                     </div>
                   </div>
@@ -1523,7 +1523,8 @@
                   <div class="form-group row">
                     <div class="col-md-6">
 
-                      <input type="submit" class="btn btn-primary py-3 px-5 btn-block" value="Send Message">
+                      <input type="button" onclick="submitContact()" class="btn btn-primary py-3 px-5 btn-block"
+                        value="Send Message">
                     </div>
                   </div>
 
@@ -1689,7 +1690,7 @@
       var class_list = xmlData.getElementsByTagName("class");
       console.log(class_list);
       var html_text = "";
-      for(var i=0;i<class_list.length;i++){
+      for (var i = 0; i < class_list.length; i++) {
         var single_page = class_list[i].getElementsByTagName("single-page")[0].childNodes[0].nodeValue;
         var image = class_list[i].getElementsByTagName("image")[0].childNodes[0].nodeValue;
         var time = class_list[i].getElementsByTagName("time")[0].childNodes[0].nodeValue;
@@ -1697,17 +1698,17 @@
         var instructor = class_list[i].getElementsByTagName("instructor")[0].childNodes[0].nodeValue;
         var duration = class_list[i].getElementsByTagName("duration")[0].childNodes[0].nodeValue;
         console.log(instructor);
-        html_text += '<div class="class-item d-flex align-items-center">'+
-                  '<a href="'+single_page+'" class="class-item-thumbnail">'+
-                    '<img src="'+image+'" alt="Image">'+
-                  '</a>'+
-                  '<div class="class-item-text">'+
-                    '<span>"'+time+'"</span>'+
-                    '<h2><a href=""'+single_page+'"">'+name+'</a></h2>'+
-                    '<span>"'+instructor+'"</span>,'+
-                    '<span>"'+duration+'"</span>'+
-                  '</div>'+
-                '</div>'
+        html_text += '<div class="class-item d-flex align-items-center">' +
+          '<a href="' + single_page + '" class="class-item-thumbnail">' +
+          '<img src="' + image + '" alt="Image">' +
+          '</a>' +
+          '<div class="class-item-text">' +
+          '<span>"' + time + '"</span>' +
+          '<h2><a href=""' + single_page + '"">' + name + '</a></h2>' +
+          '<span>"' + instructor + '"</span>,' +
+          '<span>"' + duration + '"</span>' +
+          '</div>' +
+          '</div>'
       }
       console.log(html_text);
       document.getElementById('nav-sunday').children[0].children[0].innerHTML = html_text;
@@ -1719,53 +1720,94 @@
       const jsonObj = JSON.parse(jsonData)
       console.log(jsonObj.classes);
       var html_text = "";
-      for(let i in jsonObj.classes){
-        html_text += '<div class="class-item d-flex align-items-center">'+
-                  '<a href="'+jsonObj.classes[i]["single-page"]+'" class="class-item-thumbnail">'+
-                    '<img src="'+jsonObj.classes[i]["image"]+'" alt = "Image">'+
-                  '</a>'+
-                  '<div class="class-item-text">'+
-                    '<span>'+jsonObj.classes[i]["time"]+'</span>'+
-                    '<h2><a href=""'+jsonObj.classes[i]["single-page"]+'">'+jsonObj.classes[i]["name"]+'</a></h2>'+
-                    '<span>'+jsonObj.classes[i]["instructor"]+'</span>,'+
-                    '<span>'+jsonObj.classes[i]["duration"]+'</span>,'+
-                  '</div>'+
-                '</div>'
+      for (let i in jsonObj.classes) {
+        html_text += '<div class="class-item d-flex align-items-center">' +
+          '<a href="' + jsonObj.classes[i]["single-page"] + '" class="class-item-thumbnail">' +
+          '<img src="' + jsonObj.classes[i]["image"] + '" alt = "Image">' +
+          '</a>' +
+          '<div class="class-item-text">' +
+          '<span>' + jsonObj.classes[i]["time"] + '</span>' +
+          '<h2><a href=""' + jsonObj.classes[i]["single-page"] + '">' + jsonObj.classes[i]["name"] + '</a></h2>' +
+          '<span>' + jsonObj.classes[i]["instructor"] + '</span>,' +
+          '<span>' + jsonObj.classes[i]["duration"] + '</span>,' +
+          '</div>' +
+          '</div>'
       }
       document.getElementById('nav-sunday').children[0].children[1].innerHTML = html_text;
     }
 
-    function loadSubject(file){
+    function loadSubject(file) {
       const select = document.getElementById("subject-select");
       fetch(file)
-      .then(jsonDoc => jsonDoc.json())
-      .then(jsonObj => {
-        console.log(jsonObj.contactSubject);
-        jsonObj.contactSubject.forEach(job => {
-          console.log(job)
-          const option = document.createElement("option")
-          option.textContent = job;
-          option.value = job;
-          console.log("test");
-          select.appendChild(option);
-        });
-      })
+        .then(jsonDoc => jsonDoc.json())
+        .then(jsonObj => {
+          console.log(jsonObj.contactSubject);
+          jsonObj.contactSubject.forEach(job => {
+            console.log(job)
+            const option = document.createElement("option")
+            option.textContent = job;
+            option.value = job;
+            console.log("test");
+            select.appendChild(option);
+          });
+        })
     }
 
-    function show(){
+    function show() {
       const select = document.getElementById("subject-select");
       console.log(select.value)
     }
-    
+
     window.onload = function () {
       const contact = document.getElementById("contact-head");
       contact.innerHTML = "TAD";
       loadDoc("./xml/class_sunday.xml", classXML);
       loadDoc("./json/class_sunday.json", classJSON);
       //loadSubject("./json/contect_subject.json");
-      loadSubject('http://localhost:4040/');
+      loadSubject('http://localhost:4000/api/subject');
+
+    };
+
+    //AJAX Function
+    const ajax = async (config) => {
+      const request = await fetch(config.url, {
+        method : config.method,
+        headers : {
+          'Accept' : 'application/json',
+          'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify(config.data)
+
+      });
+      const response = await request.json()
+      console.log(response)
+      return response;
 
     }
+
+
+
+    function submitContact() {
+      const data = {
+        fname : document.getElementById('fname').value,
+        lname : document.getElementById('lname').value,
+        email : document.getElementById('email').value,
+        subject : document.getElementById('subject-select').value,
+        message : document.getElementById('message').value,
+      }
+      console.log(data);
+
+      let response = ajax({
+        url : 'http://localhost:4000/api/contact',
+        method : 'POST',
+        data : data,
+      });
+      
+      console.log(response)
+
+    }
+
+
   </script>
 
 </body>
