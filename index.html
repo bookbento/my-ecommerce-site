@@ -1543,13 +1543,32 @@
 
                   <div class="form-group row">
                     <div class="col-md-12">
-                      <input type="text" class="form-control" placeholder="Occupation">
+                      <!--<input type="text" class="form-control" placeholder="Subject">-->
+                      <select id="occupation-cat" name="occupation-cat" class="form-control" onchange="show()">
+                        <option value="">Occupation Category</option>
+                      </select>
                     </div>
                   </div>
 
                   <div class="form-group row">
                     <div class="col-md-12">
+                      <!--<input type="text" class="form-control" placeholder="Subject">-->
+                      <select id="occupation" name="occupation" class="form-control" onchange="show()">
+                        <option value="">Occupation</option>
+                      </select>
+                    </div>
+                  </div>
+
+
+                  <div class="form-group row">
+                    <div class="col-md-12">
                       <input type="email" class="form-control" placeholder="Email">
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-md-12">
+                      <input type="password" class="form-control" placeholder="Password">
                     </div>
                   </div>
 
@@ -1575,16 +1594,15 @@
                       <input type="text" class="form-control" placeholder="Password">
                     </div>
                   </div>
+                  <div class="form-group row">
+                    <div class="col-md-6">
+
+                      <input type="submit" class="btn btn-primary py-3 px-5 btn-block" value="Log in">
+                    </div>
+                  </div>
+
+                </form>
               </div>
-
-              <div class="form-group row">
-                <div class="col-md-6">
-
-                  <input type="submit" class="btn btn-primary py-3 px-5 btn-block" value="Log in">
-                </div>
-              </div>
-
-              </form>
             </div>
           </div>
 
@@ -1763,10 +1781,10 @@
       contact.innerHTML = "TAD";
       loadDoc("./xml/class_sunday.xml", classXML);
       loadDoc("./json/class_sunday.json", classJSON);
+      loadDoc("./json/occupation-cat.json", classCategory);
       //loadSubject("./json/contect_subject.json");
       //loadSubject('http://localhost:4000/api/subject');
       loadSubject('http://localhost:4000/api/subscribe');
-
       document.getElementById('subscribe-form').addEventListener('submit', e => subscibeSubmit(e));
 
     };
@@ -1822,6 +1840,35 @@
       });
       console.log(response);
     }
+
+    async function classCategory(jsonDoc) {
+      const jsonData = jsonDoc.responseText;
+      console.log(jsonData);
+      const jsonObj = JSON.parse(jsonData)
+      console.log(jsonObj.OccupationCategories);
+      var html_text = "<option value = '' >Occupation Category</option>";
+      for (let i in jsonObj.OccupationCategories) {
+        html_text += '<option value = '+jsonObj.OccupationCategories[i]+'>'+jsonObj.OccupationCategories[i]+'</option>'
+      }
+      document.getElementById('occupation-cat').innerHTML = html_text
+    }
+
+    async function classOccupation(jsonDoc) {
+      const jsonData = jsonDoc.responseText;
+      console.log(jsonData);
+      const jsonObj = JSON.parse(jsonData)
+      console.log(jsonObj.Occupation);
+      var html_text = "<option value = '' >Occupation</option>";
+      for (let i in jsonObj.Occupation) {
+        html_text += '<option value = '+jsonObj.Occupation[i]+'>'+jsonObj.Occupation[i]+'</option>'
+      }
+      document.getElementById('occupation').innerHTML = html_text
+    }
+    
+    document.getElementById('occupation-cat').addEventListener('change', (e) => {
+      const target = e.target.value;
+      loadDoc("./json/"+target.toLowerCase()+".json", classOccupation);
+    })
 
   </script>
 
